@@ -1,36 +1,41 @@
 <?php
 
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\IsAdmin;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Landing page o redirección a login/registro
+Route::get('/', fn() => redirect()->route('login'));
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard redirige a lista d'esdeveniments
+Route::get('/dashboard', fn() => redirect()->route('events.index'))
+     ->middleware(['auth', 'verified'])
+     ->name('dashboard');
 
-// Només els usuaris autentificats podran accedir a aquestes rutes
-Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-     // Ruta per mostra el llistat d'esdeveniments
+// Rutes accessibles només amb sessió iniciada (i email verificat)
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Events públics
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
-    
-    // Ruta per veure en detall els esdeveniments.
-    Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
-    
-    // Ruta per procesar la reserva per a un esdeveniment
-    Route::post('/events/{id}/reserve', [EventController::class, 'reserve'])->name('events.reserve');
+    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+    Route::post('/events/{event}/reserve', [EventController::class, 'reserve'])->name('events.reserve');
+
+    // Perfil d'usuari
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 });
 
-// Només l'adiministrador podra entrar aqui
-Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('events', AdminEventController::class);
-});
-require __DIR__.'/auth.php';
+// Rutes d'administració (només admin autenticats)
+Route::middleware(['auth', IsAdmin::class])
+     ->prefix('admin')
+     ->name('admin.')
+     ->group(function () {
+         Route::resource('events', AdminEventController::class);
+     });
+
+// Autenticació Breeze
+require __DIR__ . '/auth.php';
