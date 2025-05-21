@@ -33,13 +33,13 @@ class Event extends Model
         return $this->belongsToMany(User::class, 'event_user');
     }
 
-    // Mètode auxiliar per contar les reserver
+    // Mètode auxiliar per contar les reserveres, la qual cosa em facilitara les coses més endavant en el controller 
     public function reservationsCount() 
     {
-        return $this->users()->count();
+        return $this->users()->count(); // compto el usuaris en el esdeveniment
     }
 
-    // Mètode auxiliar per calcular quantes entrades estan disponibles
+    // Mètode auxiliar per calcular quantes entrades estan disponibles, la qual cosa em facilitara les coses més endavant en el controller
     public function availableSeats() 
     {
         return $this->max_attendees - $this->reservationsCount(); // calculo les entrades disponibles restant el nombre de reserves.

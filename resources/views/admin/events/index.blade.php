@@ -31,9 +31,15 @@
             @forelse($events as $event)
                 <tr>
                     <td>{{ $event->name }}</td>
-                    <td>{{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($event->time)->format('H:i') }}</td>
-                    <td>{{ $event->category->name ?? 'N/A' }}</td>
+                    <td>{{ $event->date }}</td>
+                    <td>{{ $event->time }}</td>
+                    <td>
+                        @if($event->category)
+                            {{ $event->category->name }}
+                        @else
+                            N/A
+                        @endif
+                    </td>
                     <td class="text-center">
                         <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-sm btn-warning me-1">
                             <i class="bi bi-pencil-square"></i>

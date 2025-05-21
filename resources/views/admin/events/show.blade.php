@@ -13,10 +13,10 @@
 
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <strong>Data:</strong> {{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}
+                <strong>Data:</strong> {{ $event->date }}
             </li>
             <li class="list-group-item">
-                <strong>Hora:</strong> {{ \Carbon\Carbon::parse($event->time)->format('H:i') }}
+                <strong>Hora:</strong> {{ $event->time }}
             </li>
             <li class="list-group-item">
                 <strong>Categoria:</strong> {{ $event->category->name ?? 'N/A' }}

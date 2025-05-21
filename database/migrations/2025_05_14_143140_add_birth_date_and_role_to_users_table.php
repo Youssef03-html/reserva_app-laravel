@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) { // 2 camps nous per a la taula users
+        Schema::table('users', function (Blueprint $table) { // 2 camps nous per a la taula users, que s'agregaran a la taula ja existent
             $table->date('birth_date')->nullable()->after('email');
             $table->string('role')->default('user')->after('birth_date');
         });

@@ -13,7 +13,7 @@ class Category extends Model
     protected $fillable = ['name'];
 
 
-    // relació: 1 categoria te més d'un event
+    // relació: una categoria te més d'un event
     public function events() 
     {
         return $this->hasMany(Event::class);

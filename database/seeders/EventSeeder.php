@@ -11,8 +11,8 @@ class EventSeeder extends Seeder
 {
     public function run()
     {
-        $eventData = [
-            'Música' => [
+        $eventData = [ // Aquests son els esdeveniments de base per al projecte, sempre que s'executi el proojecte, les migracions y els seeders, tindra aquests esdeveniments,
+            'Música' => [ // després l'administrador ja decidira si afegir o treure algun, pero sempre en sera una de les categories ja establertes
                 [
                     'name' => 'Concert de Rock en viu',
                     'description' => 'Gaudeix d\'una nit inoblidable amb les millors bandes de rock locals en directe.',
@@ -99,22 +99,24 @@ class EventSeeder extends Seeder
             ],
         ];
 
-        foreach ($eventData as $categoryName => $events) {
-            // Buscar la categoría por nombre
+        foreach ($eventData as $categoryName => $events) { // recorro tot l'array asociatiu que dintre de cada categoria hi ha arrays de cada esdeveniment, la clau es el nom de categoria...
+
+            // Buscar la categoría por nom amb una consulta, on busco en la columna el registre que coincideixi amb el name,
             $category = Category::where('name', $categoryName)->first();
 
-            if (!$category) {
-                continue;
+            if (!$category) { // si no tyrobo la categoria surto, per aixi evitar crear un esdeveniment sense una categoria valida
+                continue;    
             }
 
+            // en cas de si trobar la categoria, recorro l'esdveniment  i el creo amb l'informació ja fixada, en canvi la informació no fixada, la fico aleatoria
             foreach ($events as $data) {
                 Event::create([
                     'name' => $data['name'],
                     'description' => $data['description'],
-                    'date' => Carbon::now()->addDays(rand(1, 30)),
-                    'time' => Carbon::now()->addHours(rand(10, 20))->format('H:i'),
-                    'max_attendees' => rand(50, 200),
-                    'min_age' => rand(12, 18),
+                    'date' => Carbon::now()->addDays(rand(1, 30)), // amb el mètode carbon, apartir de la data actual (carbon::now) li sumo un nombre aleatori de dies
+                    'time' => Carbon::now()->addHours(rand(10, 20))->format('H:i'), // lo mateix pero amb les hores
+                    'max_attendees' => rand(50, 200), // nombre màxim de persones aleatori...
+                    'min_age' => rand(12, 18), // edat minima aleatoria...
                     'image' => $data['image'],
                     'category_id' => $category->id,
                 ]);

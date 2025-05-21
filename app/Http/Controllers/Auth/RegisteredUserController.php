@@ -32,14 +32,14 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name'       => ['required', 'string', 'max:255'],
             'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'birth_date' => ['required', 'date'],
+            'birth_date' => ['required', 'date'], // afegeixo tambe la data de naixament
             'password'   => ['required', 'string', 'confirmed', 'min:8'],
         ]);
 
         $user = User::create([
             'name'       => $request->name,
             'email'      => $request->email,
-            'birth_date' => $request->birth_date,
+            'birth_date' => $request->birth_date, // afegeixo tambe la data de naixament
             'password'   => Hash::make($request->password),
         ]);
 

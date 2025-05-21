@@ -5,7 +5,7 @@
     <div class="row justify-content-center mt-5">
         <div class="col-md-8 col-lg-6">
 
-            <!-- Encabezado con logotipo -->
+            <!-- capçalera mb el logo -->
             <div class="text-center mb-4">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="mb-3" style="max-width: 100px;">
                 <h2 class="fw-bold">Esdeveniments Baix Camp</h2>

@@ -26,19 +26,21 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        // Afegim la data de naixament 
         $request->validate([
             'name'       => ['required', 'string', 'max:255'],
             'email'      => ['required', 'string', 'email', 'max:255'],
             'birth_date' => ['nullable', 'date'],
         ]);
 
+        // Afegim la data de naixament 
         $request->user()->update([
             'name'       => $request->name,
             'email'      => $request->email,
             'birth_date' => $request->birth_date,
         ]);
 
-
+        // Redirigim amb un missatge de que el perfil has sigut actualitzat correctament
         return redirect()->route('profile.edit')->with('status', 'Perfil actualitzat correctament.');
     }
 

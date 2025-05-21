@@ -17,18 +17,8 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'birth_date' => '1990-01-01',
-            'role' => 'admin',
+            'role' => 'admin', // amb el rol d'admin que verifica el middlweare que he creat  del IsAdmin
         ]);
 
-        // Usuaris normals
-        for ($i = 1; $i <= 10; $i++) {
-            User::create([
-                'name' => 'Usuari ' . $i,
-                'email' => 'user' . $i . '@example.com',
-                'password' => Hash::make('password'),
-                'birth_date' => now()->subYears(rand(16, 30))->format('Y-m-d'),
-                'role' => 'user',
-            ]);
-        }
     }
 }

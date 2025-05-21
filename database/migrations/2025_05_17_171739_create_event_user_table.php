@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('event_user', function (Blueprint $table) {
+       Schema::create('event_user', function (Blueprint $table) { // taula pivot entre usuaris i esdeveniments (n-n)
             $table->id(); 
             $table->foreignId('event_id')->constrained('events')->cascadeOnDelete(); // Clau forana que relaciona amb la taula events
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();  // Clau forana que relaciona amb la taula users

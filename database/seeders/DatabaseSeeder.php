@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        $this->call([
+        $this->call([ // crido als demes seeders
             CategorySeeder::class,
             EventSeeder::class,
             UserSeeder::class,

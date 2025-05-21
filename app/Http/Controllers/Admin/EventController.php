@@ -26,9 +26,10 @@ class EventController extends Controller
      */
     public function create()
     {    
-        // Obtenemos todas las categorías
+        // Recolleixo totes les categories
         $categories = Category::all();
-        // Redirige a la vista con el formulario para crear un nuevo esdeveniment, pasando las categorías
+
+        // Redirigeixo al a vista amb el formulari per crear un nou esdeveniment, pasant-li les categories, per a que quan crei pugui triar la categoria que vulgui
         return view('admin.events.create', compact('categories'));
     }
 
@@ -41,19 +42,19 @@ class EventController extends Controller
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
             'description'    => 'required|string',
-            'date'           => 'required|date',
+            'date'           => 'required|date|after_or_equal:today',
             'time'           => 'required',
-            'max_attendees'  => 'required|integer',
-            'min_age'        => 'required|integer',
+            'max_attendees'  => 'required|integer|min:1',
+            'min_age'        => 'required|integer|min:0',
+            'image'          => 'nullable|url', 
             'category_id'    => 'required|exists:categories,id',
         ]);
 
-        // Creo el esdeveniment amb la informació ja validada
+        // Creo l'esdeveniment amb la informació ja validada
         Event::create($validated);
 
-        // Redirigim al index d'events amb un missatge
-        return redirect()->route('admin.events.index')
-        ->with('success', 'Evento creado correctamente.');
+        // Redirigeixo al index d'events amb un missatge de confirmacio
+        return redirect()->route('admin.events.index')->with('success', 'Evento creado correctamente.');
     }
 
     /**
@@ -64,7 +65,7 @@ class EventController extends Controller
         // Busco l'esdveniment per ID
         $event = Event::findOrFail($id);
 
-        // Redirigeixo a la visa show amb l'event
+        // Redirigeixo a la visa show amb lobjecte de l'esdeveniment
         return view('admin.events.show', compact('event'));
     }
 
@@ -73,13 +74,13 @@ class EventController extends Controller
      */
     public function edit(string $id)
     {
-       // Buscamos el esdeveniment por ID
+       // Busco l'esdeveniiment per ID
         $event = Event::findOrFail($id);
 
-        // Obtenemos todas las categorías
+        // Obtinc totes les categories
         $categories = Category::all();
 
-        // Redirigimos a la vista de edición, pasando el evento y la lista de categorías.
+        // Redirigeixo a la vista edit, pasant-li l'esdeveniment que vol editar l'admin i el llistat de cateogries
         return view('admin.events.edit', compact('event', 'categories'));
     }
     
@@ -93,20 +94,20 @@ class EventController extends Controller
         $validated = $request->validate([
             'name'           => 'required|string|max:255',
             'description'    => 'required|string',
-            'date'           => 'required|date',
+            'date'           => 'required|date|after_or_equal:today',
             'time'           => 'required',
-            'max_attendees'  => 'required|integer',
-            'min_age'        => 'required|integer',
+            'max_attendees'  => 'required|integer|min:1',
+            'min_age'        => 'required|integer|min:0',
+            'image'          => 'nullable|url', 
             'category_id'    => 'required|exists:categories,id',
         ]);
 
-        // Trobo l'esdeveniment i l'actualitzo
+        // Busco l'esdeveniment i l'actualitzo
         $event = Event::findOrFail($id);
-        $event->update($validated); // Amb aquest metodo substitueixo els camps directament, sense haver d'anar 1 per 1
+        $event->update($validated); // Amb aquest mètode substitueixo els camps directament, sense haver d'anar 1 per 1
 
-        // Redirigeixo a l'index amb un missatge d'exit
-        return redirect()->route('admin.events.index')
-        ->with('success', 'Evento actualizado correctamente.');
+        // Redirigeixo a l'index amb un missatge de confirmació
+        return redirect()->route('admin.events.index')->with('success', 'Evento actualizado correctamente.');
     }
 
     /**
@@ -120,8 +121,7 @@ class EventController extends Controller
         // L'elimino
         $event->delete();
 
-        // Redirigeixo al index amb un missatge d'exit
-        return redirect()->route('admin.events.index')
-        ->with('success', 'Evento eliminado correctamente.');
+        // Redirigeixo al index amb un missatge de confirmació
+        return redirect()->route('admin.events.index')->with('success', 'Evento eliminado correctamente.');
     }
 }

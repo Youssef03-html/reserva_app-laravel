@@ -9,7 +9,7 @@
 
 {{-- Errors de validació --}}
 @if ($errors->any())
-<div class="alert alert-danger">
+<div class="alert alert-danger"> <!-- si hi ha algun error, els mostro-->
     <ul class="mb-0">
         @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
@@ -111,8 +111,7 @@
                 required>
             <option value="">-- Selecciona una categoria --</option>
             @foreach($categories as $category)
-                <option value="{{ $category->id }}"
-                    {{ old('category_id', $event->category_id) == $category->id ? 'selected' : '' }}>
+                <option value="{{ $category->id }}" @selected(old('category_id', $event->category_id) == $category->id)>
                     {{ $category->name }}
                 </option>
             @endforeach
@@ -129,7 +128,7 @@
                id="image"
                name="image"
                value="{{ old('image', $event->image) }}"
-               placeholder="https://...">
+               placeholder="exemple https://...">
         @error('image')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

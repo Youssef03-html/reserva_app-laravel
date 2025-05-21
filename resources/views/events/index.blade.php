@@ -30,11 +30,11 @@
                 <h5 class="card-title">{{ $event->name }}</h5>
                 <p class="card-text mb-1">
                   <i class="bi bi-calendar-event"></i>
-                  {{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}
+                  {{ $event->date }}
                 </p>
                 <p class="card-text mb-3">
                   <i class="bi bi-clock"></i>
-                  {{ \Carbon\Carbon::parse($event->time)->format('H:i') }}
+                  {{ $event->time }}
                 </p>
                 <p class="mt-auto">
                   <span class="badge bg-success">{{ $available }} places</span>

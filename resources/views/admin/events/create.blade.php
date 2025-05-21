@@ -7,7 +7,7 @@
     <h1>Crear Nou Esdeveniment</h1>
 </div>
 
-{{-- Errors de validació --}}
+{{-- Errors de validació --}} <!-- si hi ha algun error, els mostro-->
 @if ($errors->any())
 <div class="alert alert-danger">
     <ul class="mb-0">
@@ -27,7 +27,7 @@
                class="form-control @error('name') is-invalid @enderror"
                id="name"
                name="name"
-               value="{{ old('name') }}"
+               value="{{ old('name') }}" 
                required>
         @error('name')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -109,11 +109,10 @@
                 name="category_id"
                 required>
             <option value="">-- Selecciona una categoria --</option>
-            @foreach($categories as $category)
-                <option value="{{ $category->id }}"
-                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
-                </option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
+                {{ $category->name }}
+            </option>
             @endforeach
         </select>
         @error('category_id')
@@ -128,7 +127,7 @@
                id="image"
                name="image"
                value="{{ old('image') }}"
-               placeholder="https://...">
+               placeholder="exemple https://...">
         @error('image')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

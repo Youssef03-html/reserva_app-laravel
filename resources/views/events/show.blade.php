@@ -31,11 +31,11 @@
       <ul class="list-group list-group-flush mb-3">
         <li class="list-group-item">
           <i class="bi bi-calendar-event"></i>
-          {{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}
+          {{ $event->date }}
         </li>
         <li class="list-group-item">
           <i class="bi bi-clock"></i>
-          {{ \Carbon\Carbon::parse($event->time)->format('H:i') }}
+          {{ $event->time }}
         </li>
         <li class="list-group-item">
           <i class="bi bi-people"></i>
@@ -46,7 +46,7 @@
         </li>
       </ul>
 
-      {{-- Flash messages --}}
+   
       @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
       @endif
@@ -55,7 +55,7 @@
       @endif
 
       @if($available > 0)
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal"> <!-- porta al modal de confirmació -->
           Reservar plaça
         </button>
       @else
@@ -76,8 +76,8 @@
           <p>Estàs reservant per a:</p>
           <p><strong>{{ $event->name }}</strong></p>
           <p>
-            {{ \Carbon\Carbon::parse($event->date)->format('d/m/Y') }}
-            a les {{ \Carbon\Carbon::parse($event->time)->format('H:i') }}
+            {{ $event->date }}
+            a les {{ $event->time }}
           </p>
         </div>
         <div class="modal-footer">
