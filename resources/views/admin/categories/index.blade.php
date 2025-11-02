@@ -1,0 +1,53 @@
+@extends('layouts.app')
+
+@section('title', 'Gestió de Categories')
+
+@section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Gestió de Categories</h1>
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Crear Nova
+    </a>
+</div>
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Nom</th>
+                <th class="text-center">Accions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($categories as $category)
+                <tr>
+                    <td>{{ $category->name }}</td>
+                    <td class="text-center">
+                        <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-warning me-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" 
+                                    onclick="return confirm('Estàs segur que vols eliminar aquesta categoria?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="2" class="text-center">No hi ha categories disponibles.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+@endsection

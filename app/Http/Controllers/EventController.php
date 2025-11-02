@@ -75,5 +75,25 @@ class EventController extends Controller
         // si tot va be, retorno amb un missatge de confirmació
         return redirect()->back()->with('success', 'Reserva realitzada correctament!');
     }
+
+    // Mètode per cancelar la reserva, en cas que haguis fet
+    public function cancelReservation(string $id)
+    {
+        $event = Event::findOrFail($id);
+        $user = Auth::user();
+      
+        
+        // Verificar que el usuario realmente tenga una reserva
+        if (!$event->users()->where('user_id', $user->id)->exists()) {
+            return redirect()->back()->with('error', 'No has reservat en aquest esdeveniment.');
+        }
+        
+        // Cancelar la reserva
+        $event->users()->detach($user->id);
+        
+        return redirect()->back()->with('success', 'Reserva cancelada.');
+    }
+
+
 }
  

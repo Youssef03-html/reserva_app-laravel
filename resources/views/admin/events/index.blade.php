@@ -5,9 +5,15 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Gestió d'Esdeveniments</h1>
-    <a href="{{ route('admin.events.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Crear Nou
-    </a>
+    <div>
+        <!-- Botón para acceder al index de categorías -->
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary me-2">
+            <i class="bi bi-card-list"></i> Categories
+        </a>
+        <a href="{{ route('admin.events.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Crear Nou
+        </a>
+    </div>
 </div>
 
 @if(session('success'))

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\ProfileController;
@@ -20,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
     Route::post('/events/{event}/reserve', [EventController::class, 'reserve'])->name('events.reserve');
+    Route::post('/events/{event}/cancel-reservation', [EventController::class, 'cancelReservation'])->name('events.cancelReservation');
 
     // Perfil d'usuari
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -28,14 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
     });
 });
-
 // Rutes d'administració (només admin autenticats)
-Route::middleware(['auth', IsAdmin::class])
-     ->prefix('admin')
+Route::middleware(['auth', IsAdmin::class])->prefix('admin')
      ->name('admin.')
      ->group(function () {
-         Route::resource('events', AdminEventController::class);
-     });
+        Route::resource('events', AdminEventController::class);
+        Route::resource('categories', CategoryController::class);
+    });
 
 // Autenticació Breeze
 require __DIR__ . '/auth.php';

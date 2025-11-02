@@ -55,16 +55,31 @@
       @endif
 
       @if($available > 0)
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal"> <!-- porta al modal de confirmació -->
+        @if($event->users()->where('user_id', Auth::id())->exists())
+          <!-- Usuario ya ha reservado: muestra el botón de cancelar reserva con modal -->
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelReserveModal">
+          Cancel·lar reserva
+          </button>
+        @else
+        @if($available > 0)
+          <!-- Usuario no ha reservado: muestra el botón de reservar con modal -->
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">
           Reservar plaça
-        </button>
+          </button>
+        @else
+          <button class="btn btn-secondary" disabled>No hi ha places</button>
+        @endif
+      @endif
       @else
         <button class="btn btn-secondary" disabled>No hi ha places</button>
       @endif
     </div>
+      <a href="{{ route('events.index') }}" class="btn btn-secondary mt-3">
+        <i class="bi bi-arrow-left"></i> Tornar enrere
+      </a>
   </div>
 
-  <!-- Modal de confirmació -->
+  <!-- Modal de confirmació per reservar-->
   <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -92,4 +107,33 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de confirmació per cancel·lar reserva -->
+<div class="modal fade" id="cancelReserveModal" tabindex="-1" aria-labelledby="cancelReserveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelReserveModalLabel">Confirmar Cancel·lació</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tancar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Estàs a punt de cancel·lar la teva reserva per a:</p>
+        <p><strong>{{ $event->name }}</strong></p>
+        <p>
+          {{ $event->date }} a les {{ $event->time }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          No, conservar reserva
+        </button>
+        <form action="{{ route('events.cancelReservation', $event->id) }}" method="POST" class="d-inline">
+          @csrf
+          <button type="submit" class="btn btn-danger">Confirmar cancel·lació</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
