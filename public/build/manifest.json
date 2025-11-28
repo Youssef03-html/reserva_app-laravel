@@ -1,0 +1,4 @@
+{
+  "resources/sass/app.scss": { "file": "build/app.css", "src": "resources/sass/app.scss" },
+  "resources/js/app.js":      { "file": "build/app.js", "src": "resources/js/app.js" }
+}
