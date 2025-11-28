@@ -66,30 +66,30 @@ jobs:
           curl -X POST -fsS "$HOOK_URL" || (echo "Deploy hook request failed" && exit 1)
 
   create_pr:
-  name: Create Pull Request to main (gh CLI)
-  runs-on: ubuntu-latest
-  needs: tests
-  if: needs.tests.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/develop'
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    name: Create Pull Request to main (gh CLI)
+    runs-on: ubuntu-latest
+    needs: tests
+    if: needs.tests.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up gh CLI auth
-      run: |
-        echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+      - name: Set up gh CLI auth
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
-    - name: Create PR develop -> main (if not exists)
-      env:
-        GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        set -e
-        EXISTS=$(gh pr list --repo "$GITHUB_REPOSITORY" --head develop --base main --state open --json number --jq 'length')
-        if [ "$EXISTS" = "0" ]; then
-          gh pr create --repo "$GITHUB_REPOSITORY" --head develop --base main --title "Auto PR: merge develop into main" --body "This PR was created automatically because tests on develop passed."
-          echo "PR created"
-        else
-          echo "PR already exists, skipping create"
-        fi
+      - name: Create PR develop -> main (if not exists)
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -e
+          EXISTS=$(gh pr list --repo "$GITHUB_REPOSITORY" --head develop --base main --state open --json number --jq 'length')
+          if [ "$EXISTS" = "0" ]; then
+            gh pr create --repo "$GITHUB_REPOSITORY" --head develop --base main --title "Auto PR: merge develop into main" --body "This PR was created automatically because tests on develop passed."
+            echo "PR created"
+          else
+            echo "PR already exists, skipping create"
+          fi
 
 
   merge_to_main:
