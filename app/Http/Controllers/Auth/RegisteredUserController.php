@@ -42,9 +42,9 @@ class RegisteredUserController extends Controller
             'birth_date' => $request->birth_date, 
             'password'   => Hash::make($request->password),
         ]);
-
+// asdnalkfnaksljdgnbakjdlgbakdjlbgdfksl
         event(new Registered($user));
-
+        // sadasdas
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
