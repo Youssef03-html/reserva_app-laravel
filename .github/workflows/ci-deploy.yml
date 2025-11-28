@@ -81,7 +81,7 @@ jobs:
           title: "Auto PR: merge develop into main"
           body: "This PR was created automatically because tests on develop passed."
           base: main
-          head: develop
+          branch: develop
 
   merge_to_main:
     name: Merge PR to main
