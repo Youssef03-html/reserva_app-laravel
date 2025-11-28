@@ -32,19 +32,19 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name'       => ['required', 'string', 'max:255'],
             'email'      => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'birth_date' => ['required', 'date'], // afegeixo tambe la data de naixament
+            'birth_date' => ['required', 'date'], 
             'password'   => ['required', 'string', 'confirmed', 'min:8'],
         ]);
 
         $user = User::create([
             'name'       => $request->name,
             'email'      => $request->email,
-            'birth_date' => $request->birth_date, // afegeixo tambe la data de naixament
+            'birth_date' => $request->birth_date, 
             'password'   => Hash::make($request->password),
         ]);
-
+// asdnalkfnaksljdgnbakjdlgbakdjlbgdfksl
         event(new Registered($user));
-
+        // sadasdas
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
