@@ -1,17 +1,14 @@
 name: CI + Deploy (Laravel Cloud)
 
-
 permissions:
   contents: write
   pull-requests: write
-
 
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ develop ]
-
 
 jobs:
   tests:
@@ -47,7 +44,6 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
           php artisan migrate --force
-
 
       - name: Run tests
         run: php artisan test --no-coverage
@@ -86,6 +82,7 @@ jobs:
           body: "This PR was created automatically because tests on develop passed."
           base: main
           head: develop
+
   merge_to_main:
     name: Merge PR to main
     runs-on: ubuntu-latest
@@ -95,17 +92,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Find PR number
+      - name: Find PR number (using GH CLI)
         id: pr
         run: |
-          # get PR number for head=develop base=main
+          # get PR number for head=develop base=main (uses gh CLI)
           PR_NUMBER=$(gh pr list --head develop --base main --state open --json number --jq '.[0].number' 2>/dev/null || true)
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-      - name: Merge PR if exists
+      - name: Merge PR if exists (via GitHub API)
         if: steps.pr.outputs.pr_number != ''
-        uses: actions-ecosystem/action-merge-pull-request@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pull_request_number: ${{ steps.pr.outputs.pr_number }}
-          merge_method: merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+          echo "Merging PR #${PR_NUMBER} on repo $REPO"
+          # Attempt merge via GitHub API (merge_method: merge)
+          response=$(curl -s -o /dev/stderr -w "%{http_code}" -X PUT \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}/merge" \
+            -d '{"merge_method":"merge"}')
+          if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
+            echo "PR merged successfully."
+          else
+            echo "Merge attempt returned HTTP code $response. It may be blocked by branch protection or require review."
+            # Show PR info for debugging (non-fatal)
+            curl -s -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}" || true
+            exit 1
+          fi
