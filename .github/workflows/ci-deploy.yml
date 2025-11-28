@@ -68,3 +68,21 @@ jobs:
             exit 1
           fi
           curl -X POST -fsS "$HOOK_URL" || (echo "Deploy hook request failed" && exit 1)
+
+  create_pr:
+    name: Create Pull Request to main
+    runs-on: ubuntu-latest
+    needs: tests
+    if: needs.tests.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create PR develop -> main
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Auto PR: merge develop into main"
+          body: "This PR was created automatically because tests on develop passed."
+          base: main
+          head: develop
