@@ -33,10 +33,14 @@ jobs:
       - name: Prepare environment & migrate
         run: |
           cp .env.example .env
+          # Force using sqlite in CI
+          sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/" .env || true
+          sed -i "s|^DB_DATABASE=.*|DB_DATABASE=database/database.sqlite|" .env || true
           php artisan key:generate
-          mkdir -p database || true
+          mkdir -p database
           touch database/database.sqlite
           php artisan migrate --force
+
 
       - name: Run tests
         run: php artisan test --no-coverage
